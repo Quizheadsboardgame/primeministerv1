@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UK PRIME MINISTERS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif; /* Standard font */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: transparent; /* Fully transparent background */
+            color: black; /* Standard text color */
+            text-align: center;
+        }
+
+        #quiz-container {
+            background-color: transparent; /* Fully transparent container */
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        #logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .answer {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: white; /* Change the answer color to white */
+        }
+
+        #next-button {
+            background-color: white; /* Change background color to white */
+            color: black; /* Change text color to black for visibility */
+            border: 2px solid #ff9900; /* Optional: Add a border for better visibility */
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #next-button:hover {
+            background-color: #ffcc00; /* Change hover color for better effect */
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fadeOut {
+            animation: fadeOut 0.5s forwards;
+        }
+
+        .fadeIn {
+            animation: fadeIn 0.5s forwards;
+        }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <img id="logo" src="https://i.imgur.com/cyZ0Z21.png" alt="George Michael Logo">
+    <h1>UK PRIME MINISTERS</h1>
+    <div id="question-container">
+        <div class="question" id="question">Loading question...</div>
+        <div class="answer" id="answer">Loading answer...</div>
+        <button id="next-button" onclick="nextQuestion()">Next Question</button>
+    </div>
+</div>
+
+<script>
+    // Question and answers data
+    const quizData = [
+        { question: "Who was the first Prime Minister of the United Kingdom?", answer: "Sir Robert Walpole" },
+        { question: "Which Prime Minister served the longest uninterrupted term in office?", answer: "Sir Robert Walpole (1721–1742)" },
+        { question: "Who was the first female Prime Minister of the UK?", answer: "Margaret Thatcher" },
+        { question: "Which Prime Minister declared war on Germany in 1939, starting the UK's involvement in World War II?", answer: "Neville Chamberlain" },
+        { question: "Who succeeded Winston Churchill as Prime Minister in 1955?", answer: "Sir Anthony Eden" },
+        { question: "Which Prime Minister oversaw the Brexit referendum in 2016?", answer: "David Cameron" },
+        { question: "Who was Prime Minister during the Suez Crisis of 1956?", answer: "Sir Anthony Eden" },
+        { question: "Who was the UK’s first Labour Prime Minister?", answer: "Ramsay MacDonald" },
+        { question: "Which Prime Minister famously said, 'You turn if you want to, the lady's not for turning'?", answer: "Margaret Thatcher" },
+        { question: "Who was the UK Prime Minister when Queen Elizabeth II was crowned in 1952?", answer: "Winston Churchill" },
+        { question: "Who was the youngest-ever Prime Minister of the UK?", answer: "William Pitt the Younger (24 years old)" },
+        { question: "Which Prime Minister won the 1997 general election in a landslide victory?", answer: "Tony Blair" },
+        { question: "Who was the Prime Minister during World War I?", answer: "David Lloyd George" },
+        { question: "Who succeeded Margaret Thatcher as Prime Minister in 1990?", answer: "John Major" },
+        { question: "Which Prime Minister is credited with founding the National Health Service (NHS) in 1948?", answer: "Clement Attlee" },
+        { question: "Who became Prime Minister after the resignation of Theresa May in 2019?", answer: "Boris Johnson" },
+        { question: "Which Prime Minister was in office during the Falklands War in 1982?", answer: "Margaret Thatcher" },
+        { question: "Which Prime Minister negotiated the Good Friday Agreement in 1998?", answer: "Tony Blair" },
+        { question: "Who was Prime Minister of the UK during the financial crisis of 2008?", answer: "Gordon Brown" },
+        { question: "Which Prime Minister introduced the Corn Laws in 1815, which were later repealed in 1846?", answer: "Lord Liverpool (introduced) and Sir Robert Peel (repealed)" },
+        { question: "Which Prime Minister led Britain through the majority of World War II?", answer: "Winston Churchill" },
+        { question: "Who was the first Prime Minister of Queen Victoria’s reign?", answer: "Lord Melbourne" },
+        { question: "Which Prime Minister introduced the controversial Poll Tax in 1990?", answer: "Margaret Thatcher" },
+        { question: "Who was the UK Prime Minister during the 2012 London Olympics?", answer: "David Cameron" },
+        { question: "Which Prime Minister signed the Maastricht Treaty in 1992, creating the European Union?", answer: "John Major" },
+        { question: "Who was Prime Minister immediately before Winston Churchill's first term?", answer: "Neville Chamberlain" },
+        { question: "Which Prime Minister served during the UK’s vote to remain or leave the European Economic Community (EEC) in 1975?", answer: "Harold Wilson" },
+        { question: "Who was the first Scottish-born Prime Minister in the 21st century?", answer: "Gordon Brown" },
+        { question: "Which Prime Minister was known for his 'appeasement' policy toward Nazi Germany?", answer: "Neville Chamberlain" },
+        { question: "Which Prime Minister was known for his 'Big Society' agenda?", answer: "David Cameron" }
+    ];
+
+    let currentQuestionIndex = 0;
+
+    function showQuestion() {
+        const questionElement = document.getElementById('question');
+        const answerElement = document.getElementById('answer');
+        const nextButton = document.getElementById('next-button');
+
+        // Reset the fade out animation
+        questionElement.classList.remove('fadeOut');
+        answerElement.classList.remove('fadeOut');
+
+        // Fade out the answer and question
+        questionElement.classList.add('fadeOut');
+        answerElement.classList.add('fadeOut');
+
+        setTimeout(() => {
+            const currentQuestion = quizData[currentQuestionIndex];
+
+            questionElement.textContent = currentQuestion.question;
+            answerElement.textContent = currentQuestion.answer;
+
+            // Reset the fade in animation
+            questionElement.classList.remove('fadeIn');
+            answerElement.classList.remove('fadeIn');
+
+            // Fade in the question and answer
+            questionElement.classList.add('fadeIn');
+            answerElement.classList.add('fadeIn');
+        }, 500);
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            showQuestion();
+        } else {
+            const questionElement = document.getElementById('question');
+            const answerElement = document.getElementById('answer');
+            const nextButton = document.getElementById('next-button');
+
+            questionElement.textContent = "Quiz Complete!";
+            answerElement.textContent = "";
+            nextButton.style.display = "none"; // Hide the button
+        }
+    }
+
+    // Initial call to show the first question
+    showQuestion();
+</script>
+
+</body>
+</html>
